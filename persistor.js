@@ -13,22 +13,31 @@ class Persistor {
         delete localStorage[key];
 
         return new Proxy(this, {
-            get: (target, key) => target[key] || target.old[key],
+            get: (target, key) => (target[key] != undefined ? target[key] : target.old[key]),
             set: (target, key, value) => {
                 target[key] = value;
-                localStorage[target.key] = JSON.stringify(target);
+                setTimeout(
+                    () => (localStorage[target.key] = JSON.stringify(target)),
+                    1
+                );
                 return true;
             },
         });
     }
 
-    remember() {
-        for (let key in this.old) {
+    remember(key) {
+        if (key && this[key] == undefined) {
             this[key] = this.old[key];
+        } else {
+            for (let key in this.old) {
+                this[key] = this.old[key];
+            }
         }
     }
 
     forget() {
-        this.old = {};
+        for (let key in this.old) {
+            delete this.old[key];
+        }
     }
 }
