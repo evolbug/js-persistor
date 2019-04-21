@@ -1,3 +1,8 @@
+/**
+ * @copyright Daniels Kursits (evolbug), 2019 <https://github.com/evolbug>
+ * @license MIT license <https://opensource.org/licenses/MIT>
+ */
+
 class Persistor {
     constructor(key) {
         Object.defineProperty(this, "key", {
@@ -13,7 +18,8 @@ class Persistor {
         delete localStorage[key];
 
         return new Proxy(this, {
-            get: (target, key) => (target[key] != undefined ? target[key] : target.old[key]),
+            get: (target, key) =>
+                target[key] != undefined ? target[key] : target.old[key],
             set: (target, key, value) => {
                 target[key] = value;
                 setTimeout(
